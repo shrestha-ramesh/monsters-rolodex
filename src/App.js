@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {CardList} from './components/card-list/card-list.components'
+import {SearchBox} from './components/search-box/search-box.component'
 import './App.css';
 class App extends Component{
   constructor(){
@@ -7,7 +8,8 @@ class App extends Component{
     //it is give us access to this dot state
     super();
     this.state = {
-      monsters:[]
+      monsters:[],
+      searchField:''
     };
   }
   componentDidMount(){
@@ -15,10 +17,21 @@ class App extends Component{
       .then(response => response.json())
       .then(users => this.setState({monsters:users}))
   }
+  handleChange=(e)=>{
+    this.setState({searchField:e.target.value})
+  }
   render(){
+    const {monsters, searchField} = this.state;
+    const filteredMonsters = monsters.filter(monster=>
+      monster.name.toLowerCase().includes(searchField.toLowerCase())
+    )
     return (
       <div className="App">
-        <CardList monsters={this.state.monsters}/>
+        <SearchBox 
+          placeholder='search monster'
+          handleChange={this.handleChange}
+        />
+        <CardList monsters={filteredMonsters}/>
       </div>
     );
   }
